@@ -223,12 +223,84 @@
 
       <!-- Template Main JS File -->
       <script src="assets/js/main.js"></script>
-
+      <!-- 
       <script>
         btn = document.getElementById("buy-btn");
         btn.addEventListener('click', () => {
+          
 
         });
+      </script> -->
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+
+        var options = {
+          "key": "rzp_test_Mapj4irgaIOTzh", // Enter the Key ID generated from the Dashboard
+          "amount": "500", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          "currency": "INR",
+          "name": "Comapny Name",
+          "description": "Test Transaction",
+          "image": "https://example.com/your_logo",
+          "order_id": "order_JDF1fogNwr5vxW", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          "handler": function (response) {
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature)
+          },
+          "prefill": {
+            "name": "Person 1",
+            "email": "example@gmail.com",
+            "contact": "9876543210"
+          },
+          "notes": {
+            "address": "Razorpay Corporate Office"
+          },
+          "theme": {
+            "color": "#3399cc"
+          }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+          alert(response.error.code);
+          alert(response.error.description);
+          alert(response.error.source);
+          alert(response.error.step);
+          alert(response.error.reason);
+          alert(response.error.metadata.order_id);
+          alert(response.error.metadata.payment_id);
+        });
+        document.getElementById('buy-btn').onclick = async function (e) {
+          console.log("Clicked");
+          
+          var amount = 500;
+          var username = "rzp_test_Mapj4irgaIOTzh";
+          var password = "5E3jrT9mErftey7ISd16VK5J";
+
+          res = await axios.post(
+            'https://api.razorpay.com/v1/orders',
+            {
+             "amount": amount,
+              "currency": options["currency"],
+              "receipt": "qwsaq1"
+            },
+            {
+              headers: {
+                'Authorization': `Basic ${btoa(username + ':' + password)}`,
+                'Access-Control-Allow-Origin': '*',
+              },
+              
+            },
+          );
+
+          options["amount"] = amount;
+          options["order_id"] = res.data["id"];
+
+          rzp1.open();
+          e.preventDefault();
+        }
       </script>
 
 </body>

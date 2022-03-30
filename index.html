@@ -262,16 +262,6 @@
             "color": "#3399cc"
           }
         };
-        var rzp1 = new Razorpay(options);
-        rzp1.on('payment.failed', function (response) {
-          alert(response.error.code);
-          alert(response.error.description);
-          alert(response.error.source);
-          alert(response.error.step);
-          alert(response.error.reason);
-          alert(response.error.metadata.order_id);
-          alert(response.error.metadata.payment_id);
-        });
         document.getElementById('buy-btn').onclick = async function (e) {
           console.log("Clicked");
           
@@ -289,15 +279,25 @@
             {
               headers: {
                 'Authorization': `Basic ${btoa(username + ':' + password)}`,
-                'Access-Control-Allow-Origin': '*',
               },
-              
             },
           );
+
+          console.log(res.data);
 
           options["amount"] = amount;
           options["order_id"] = res.data["id"];
 
+          var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+          alert(response.error.code);
+          alert(response.error.description);
+          alert(response.error.source);
+          alert(response.error.step);
+          alert(response.error.reason);
+          alert(response.error.metadata.order_id);
+          alert(response.error.metadata.payment_id);
+        });
           rzp1.open();
           e.preventDefault();
         }
